@@ -81,6 +81,9 @@ class AlienInvasion:
         if self.game_active:
             return
         if self.play_button.rect.collidepoint(mouse_pos):
+            # Restarts dynamic settings
+            self.settings.initialize_dynamic_settings()
+            
             # Restarts game statistics
             self.stats.reset_stats()
             self.game_active = True
@@ -142,6 +145,7 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _update_aliens(self):
         """
