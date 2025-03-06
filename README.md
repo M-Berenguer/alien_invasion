@@ -28,7 +28,7 @@ A game in python from the book "Python Crash Course" by Eric Matthes.
 
     4. Save the file, and the settings will be applied immediately.
 
-    With this configuration we avoid the appearance of problems that are not real, such as:
+    Why? Because with this configuration we avoid the appearance of problems that are not real, such as:
 
     ```log
      Module 'pygame' has no 'init' member #2502
