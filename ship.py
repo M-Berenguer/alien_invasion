@@ -2,12 +2,14 @@
 This module contains the Ship class.
 """
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     """A class to manage the ship."""
 
     def __init__(self, ai_game):
         """Initialize the ship and set its starting position."""
+        super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
@@ -26,7 +28,7 @@ class Ship:
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)
 
-    def update(self):
+    def update(self, *args, **kwargs):
         """Update the ship's position based on the movement flags."""
         # Update the ship's x value, not the rect.
         if self.moving_right and self.rect.right < self.screen_rect.right:
