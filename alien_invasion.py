@@ -84,24 +84,7 @@ class AlienInvasion:
         if self.game_active:
             return
         if self.play_button.rect.collidepoint(mouse_pos):
-            # Restarts dynamic settings
-            self.settings.initialize_dynamic_settings()
-
-            # Reset the game statistics.
-            self.stats.reset_stats()
-            self.sb.prep_score()
-            self.sb.prep_level()
-            self.sb.prep_ships()
-            self.game_active = True
-
-            # Get rid of any remaining aliens and bullets
-            self.aliens.empty()
-            self.bullets.empty()
-
-            # Create a new fleet and center the ship
-            self._create_fleet()
-            self.ship.center_ship()
-
+            self._start_first_level()
             # Hide the mouse's cursor
             pygame.mouse.set_visible(False)
 
@@ -155,14 +138,47 @@ class AlienInvasion:
             self.sb.check_high_score()
 
         if not self.aliens:
-            # Destroy existing bullets and create a new fleet
-            self.bullets.empty()
-            self._create_fleet()
-            self.settings.increase_speed()
+            self._start_next_level()
 
-            # Increase level
-            self.stats.level += 1
-            self.sb.prep_level()
+    def _start_first_level(self):
+        # Restarts dynamic settings
+        self.settings.initialize_dynamic_settings()
+
+        # Reset the game statistics
+        self.stats.reset_stats()
+        self.sb.prep_score()
+        self.sb.prep_level()
+        self.sb.prep_ships()
+
+        self.game_active = True
+
+        self._init_level_and_ship()
+
+    def _start_next_level(self):
+        """
+        Start the next level after all aliens are destroyed.
+        """
+        # Increase level counter
+        self.stats.level += 1
+        self.sb.prep_level()
+
+        self.settings.increase_speed()
+
+        self._init_level_and_ship()
+
+    def _init_ship(self):
+        self.ship.center_ship()
+
+    def _init_level(self):
+        # Get rid of any remaining aliens and bullets
+        self.aliens.empty()
+        self.bullets.empty()
+
+        self._create_fleet()
+
+    def _init_level_and_ship(self):
+        self._init_level()
+        self._init_ship()
 
     def _update_aliens(self):
         """
@@ -185,13 +201,7 @@ class AlienInvasion:
             self.stats.ships_left -= 1
             self.sb.prep_ships()
 
-            # Get rid of any remaining aliens and bullets
-            self.aliens.empty()
-            self.bullets.empty()
-
-            # Create a new fleet and center the ship
-            self._create_fleet()
-            self.ship.center_ship()
+            self._init_level_and_ship()
 
             # Pause
             pygame.time.delay(1000)
@@ -249,13 +259,13 @@ class AlienInvasion:
     def _update_screen(self):
         """Update images on the screen and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
+
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
         self.sb.show_score()
 
-        # Draw play button if the game is not active
         if not self.game_active:
             self.play_button.draw_button()
 
